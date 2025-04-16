@@ -1,5 +1,5 @@
-# Glideapp
+# Website using a Dataset
 
-Directly made an app using glide app using a dataset here is the app 
+here is the social media app 
 
 https://socialsphere-tlx6.glide.page
