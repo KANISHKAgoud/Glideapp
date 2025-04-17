@@ -2,35 +2,19 @@
 
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
-
-interface ExcelData {
-  Text: string;
-  Sentiment?: string;
-  Timestamp?: number;
-  User?: string;
-  Platform: string;
-  Hashtags?: string;
-  Retweets?: number;
-  Likes?: number;
-  Country?: string;
-  Year?: number;
-  Month?: number;
-  Day?: number;
-  Hour?: number;
-}
+import Link from "next/link";
 
 export default function ExcelReader() {
-  const [excelData, setExcelData] = useState<ExcelData[]>([]);
+  const [excelData, setExcelData] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/Social_Media_Trends.xlsx");
-      const arrayBuffer = await response.arrayBuffer();
-      const workbook = XLSX.read(arrayBuffer, { type: "buffer" });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const jsonData: ExcelData[] = XLSX.utils.sheet_to_json(worksheet);
-      setExcelData(jsonData);
+      const res = await fetch("/Social_Media_Trends.xlsx");
+      const ab = await res.arrayBuffer();
+      const wb = XLSX.read(ab, { type: "buffer" });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const data = XLSX.utils.sheet_to_json(ws);
+      setExcelData(data);
     };
 
     fetchData();
@@ -39,15 +23,25 @@ export default function ExcelReader() {
   return (
     <div className="mt-3 mx-auto p-4 md:w-[70%] w-[100%]">
       {excelData.map((entry, index) => (
-        <div key={index} className="mb-2 p-2 rounded text-white">
-            <div className="flex justify-between">
-
+        <div key={index} className="mb-2 p-2 rounded text-white bg-gray-800">
+          <div className="flex justify-between items-start">
             <div>
-          <p> {entry.Platform}</p>
-          <p> {entry.Text}</p>
+              <Link href={`/details/${index}`}>
+                <p className="hover:underline cursor-pointer font-semibold">
+                  Platform: {entry.Platform}
+                </p>
+              </Link>
+              <Link href={`/details/${index}`}>
+                <p className="hover:underline cursor-pointer">
+                  Text: {entry.Text}
+                </p>
+              </Link>
             </div>
-            <button className="text-white">...</button>
-            </div>
+
+            <Link href={`/edit/${index}`}>
+              <button className="text-white text-xl px-2">...</button>
+            </Link>
+          </div>
           <div className="w-full h-[2px] bg-white my-4"></div>
         </div>
       ))}

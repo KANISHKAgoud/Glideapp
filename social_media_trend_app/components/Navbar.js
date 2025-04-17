@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 const Navbar = () => {
   return (
-    <div className='bg-purple-950 h-[30%] w-[100%] text-white '>
+    <div className='bg-purple-900 h-[30%] w-[100%] text-white '>
         <div className='flex gap-3 p-3 pl-11'>
 
         <Image
@@ -15,6 +15,7 @@ const Navbar = () => {
         <div className='text-xl font-bold'>
             SocialSphere
         </div>
+      
       
         </div>
     </div>
