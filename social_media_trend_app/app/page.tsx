@@ -1,13 +1,11 @@
 
-import Navbar from "@/components/Navbar"
 import ExcelReader from "@/components/ExcelReader";
-
-
+import Navbar from "@/components/Navbar"
 
 export default function Home() {
   return (
     <div className="h-[100%] w-[100%]">
-      <Navbar />
+       <Navbar/>
       <div className="bg-black w-[100%]">
         <div className="text-white pt-3.5 md:pt-4 md:flex justify-evenly md:p-0 pl-5 ">
           <div className="text-xl font-bold">
