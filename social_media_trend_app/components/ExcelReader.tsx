@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import Link from "next/link";
 
-export default function ExcelReader() {
+export default function ExcelReader({ searchTerm }: { searchTerm: string }) {
   const [excelData, setExcelData] = useState<any[]>([]);
 
   useEffect(() => {
@@ -20,20 +20,24 @@ export default function ExcelReader() {
     fetchData();
   }, []);
 
+  const filteredData = excelData.filter((entry) =>
+    entry.Platform?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="mt-3 mx-auto p-4 md:w-[70%] w-[100%]">
-      {excelData.map((entry, index) => (
+      {filteredData.map((entry, index) => (
         <div key={index} className="mb-2 p-2 rounded text-white bg-gray-800">
           <div className="flex justify-between items-start">
             <div>
               <Link href={`/details/${index}`}>
                 <p className="hover:underline cursor-pointer font-semibold">
-                  Platform: {entry.Platform}
+                  {entry.Platform}
                 </p>
               </Link>
               <Link href={`/details/${index}`}>
                 <p className="hover:underline cursor-pointer">
-                  Text: {entry.Text}
+                  Post: {entry.Text}
                 </p>
               </Link>
             </div>

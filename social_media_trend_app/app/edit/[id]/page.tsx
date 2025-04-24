@@ -7,6 +7,7 @@ import * as XLSX from "xlsx";
 export default function EditPage() {
   const { id } = useParams();
   const [data, setData] = useState<any | null>(null);
+  const [hasChanged, setHasChanged] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -23,13 +24,32 @@ export default function EditPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!data) return;
+    setHasChanged(true); // mark as changed
     setData({ ...data, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async () => {
+    try {
+      const res = await fetch("/api/updateEntry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, updatedEntry: data }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update");
+
+      alert("Data saved successfully!");
+      setHasChanged(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save data.");
+    }
   };
 
   if (!data) return <div className="p-4 text-white">Loading...</div>;
 
   return (
-    <div className="p-4 text-white">
+    <div className="p-4 text-white bg-black">
       <h1 className="text-2xl font-bold mb-4">Edit Entry</h1>
       <div className="space-y-3">
         {Object.entries(data).map(([key, value]) => (
@@ -45,6 +65,16 @@ export default function EditPage() {
           </div>
         ))}
       </div>
+
+      {hasChanged && (
+          
+        <button
+          className="mt-6 bg-green-600 p-2 mx-8 px-8 rounded hover:bg-green-700"
+          onClick={handleSave}
+          >
+          Save
+        </button>
+      )}
     </div>
   );
 }

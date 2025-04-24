@@ -1,3 +1,5 @@
+// details route
+
 "use client";
 
 import { useParams } from "next/navigation";
@@ -20,6 +22,12 @@ export default function DetailPage() {
   const [showGraph, setShowGraph] = useState(false);
   const chartRef = useRef(null);
 
+  const [likes, setLikes] = useState<number | null>(null);
+  const postId = Number(id);
+
+  const [predictedLikes, setPredictedLikes] = useState<number | null>(null);
+
+
 
   useEffect(() => {
     const loadData = async () => {
@@ -36,6 +44,23 @@ export default function DetailPage() {
 
   if (!data) return <div className="text-white p-4">Loading...</div>;
 
+  const fetchPredictedLikes = async () => {
+    try {
+      const retweets = data?.Retweets || 0; // Use real data's retweets
+      const res = await fetch(`http://127.0.0.1:5000/predict_likes/${retweets}`);
+      const json = await res.json();
+      if (json.predicted_likes) {
+        setPredictedLikes(json.predicted_likes);
+      }
+    } catch (err) {
+      console.error("Prediction fetch failed:", err);
+    }
+  };
+
+  if (data) {
+    fetchPredictedLikes();
+  }
+
 
   const downloadChartImage = () => {
     if (!chartRef.current) return;
@@ -47,6 +72,25 @@ export default function DetailPage() {
       link.click();
     });
   };
+
+  const handleLike = async () => {
+    try {
+      const res = await fetch(`http://127.0.0.1:5000/like_post/${postId}`, {
+        method: "POST",
+      });
+
+      const data = await res.json();
+      if (data.status === "success") {
+        setLikes(data.likes);
+      } else {
+        console.error("Error from backend:", data.message);
+      }
+    } catch (err) {
+      console.error("Fetch failed:", err);
+    }
+  };
+
+
 
 
   return (
@@ -82,6 +126,14 @@ export default function DetailPage() {
               })}
             </div>
 
+            <div className="p-4">
+              {/* <h2 className="text-lg font-bold">Post {postId}</h2> */}
+              <button onClick={handleLike} className="bg-blue-500 text-white px-4 py-2 rounded">
+                👍 Like
+              </button>
+              {likes !== null && <p>{likes} Likes</p>}
+            </div>
+
             {/* Optional Like/Retweet Bars */}
             {data.Likes && data.Retweets && (
               <div className="mt-10 space-y-6">
@@ -103,6 +155,13 @@ export default function DetailPage() {
                     ></div>
                   </div>
                 </div>
+
+                {predictedLikes !== null && (
+                  <div className="text-white mt-4">
+                    <strong>Predicted Likes</strong> for this post {predictedLikes}
+                  </div>
+                )}
+
 
                 {/* Toggle Graph Button */}
                 <div className="mt-10">
