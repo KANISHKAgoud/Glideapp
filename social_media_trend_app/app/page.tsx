@@ -14,7 +14,7 @@ export default function Home() {
           <div className="text-xl font-bold">Post Insights</div>
           <div className="flex gap-4 mt-3 md:mt-0">
             <input
-              className="bg-gray-800 text-center rounded-xl md:w-[60%] w-[75%]"
+              className="bg-gray-800 text-center rounded-xl md:w-[80%] w-[75%]"
               type="search"
               placeholder="Search platform"
               value={searchTerm}
