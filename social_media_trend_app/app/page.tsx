@@ -20,7 +20,7 @@ export default function Home() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className="bg-purple-700 md:p-2 p-3 rounded-xl">ADD</button>
+            {/* <button className="bg-purple-700 md:p-2 p-3 rounded-xl">ADD</button> */}
           </div>
         </div>
 
